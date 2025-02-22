@@ -62,7 +62,7 @@ def build_starcoloring_problem(G, targetColor):
     for i in G.nodes:
         x[i] = {}
         for c in range(0,targetColor):
-            x[i][c] = m.add_var(var_type=BINARY, name="x_{}_{}".format(i,c))
+            x[i][c] = m.add_var(var_type=BINARY, name="color_{}_{}".format(i,c))
     # each vertex has a color
     for i in G.nodes:
         m += xsum([x[i][c] for c in x[i]]) == 1
@@ -78,7 +78,8 @@ def build_starcoloring_problem(G, targetColor):
     for i in G.nodes:
         for j in G.neighbors(i):
             if j != i:
-                m += x[i][c] + x[j][c] <= 1 #distance 1 coloring must hold
+                for c in range (0,targetColor):
+                    m += x[i][c] + x[j][c] <= 1 #distance 1 coloring must hold
                 for k in G.neighbors(j):
                     if k != i and k != j:
                         for l in G.neighbors(k):
@@ -89,7 +90,10 @@ def build_starcoloring_problem(G, targetColor):
                                         m += x[i][c] + x[j][c] + x[k][c] + x[l][c] +  x[i][c2] + x[j][c2] + x[k][c2] + x[l][c2] <= 3 #at most 3 out of 2 colors in 4
 
 
-                    
+
+    #try to normalize solution by having the first two vertices have particular colors
+    m += x[stencil_node_name(0,0)][0] = 1
+    m += x[stencil_node_name(1,0)][1] = 1
 
     #set objective function
     m.objective = minimize(maxcolor)
