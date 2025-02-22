@@ -107,22 +107,33 @@ def print_stencil_color(sizex, sizey, G, color_variables, fileout=sys.stdout):
         print("", file=fileout)
 
 
-sizex = 4
-sizey = 4
-targetcolor=9
-G = graph_build_stencil_2d_9pt_box(sizex,sizey)
+if len(sys.argv) < 4:
+    print ("usage: python3 stencil.py <sizeX> <sizeY> <stenciltype>")
+    print ("stenciltype can be 5pt 9pt_box 9pt_star")
+    sys.exit(1)
+
+
+sizex = int(sys.argv[1])
+sizey = int(sys.argv[2])
+if sys.argv[3] == "5pt":
+    targetcolor=5
+    G = graph_build_stencil_2d_5pt(sizex,sizey)
+if sys.argv[3] == "9pt_box":
+    targetcolor=9
+    G = graph_build_stencil_2d_9pt_box(sizex,sizey)
+if sys.argv[3] == "9pt_star":
+    targetcolor=12
+    G = graph_build_stencil_2d_9pt_star(sizex,sizey)
+
+
 print(list(G.nodes))
 print(list(G.edges))
     
 m,x,maxcolor = build_starcoloring_problem(G, targetcolor)
 m.write("starcoloring_{}_{}.lp".format(G.name, targetcolor))
-print (x)
-
-    
+#print (x)
 
 solved = m.optimize()
-
-
 
 if solved == OptimizationStatus.OPTIMAL:
     print (G.name)
