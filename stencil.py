@@ -103,7 +103,7 @@ def print_stencil_color(sizex, sizey, G, color_variables, fileout=sys.stdout):
             for c in range (0, targetcolor):
                 if color_variables[vertexname][c].x > 0.99:
                     color = c
-            print(color, end='', file=fileout)
+            print(hex(color)[2:], end='', file=fileout)
         print("", file=fileout)
 
 
