@@ -1,6 +1,7 @@
 import networkx as nx
 from mip import LinExpr, Model, xsum, minimize, BINARY, INTEGER, OptimizationStatus
 import sys
+import time
 
 def stencil_node_name(i, j):
     return "{}_{}".format(i,j)
@@ -133,18 +134,41 @@ m,x,maxcolor = build_starcoloring_problem(G, targetcolor)
 m.write("starcoloring_{}_{}.lp".format(G.name, targetcolor))
 #print (x)
 
+
+start_time = time.perf_counter()
+
 solved = m.optimize()
 
-if solved == OptimizationStatus.OPTIMAL:
-    print (G.name)
-    for i in G.nodes:
-        for c in range (0, targetcolor):
-            if x[i][c].x > 0.99:
-                color = c
-        print ("vertex {} has color {}".format(i, color))
-    print ("number of color: {}".format(maxcolor.x+1))
-    print_stencil_color (sizex, sizey, G, x)
-    print_stencil_color (sizex, sizey, G, x, fileout=open("starcoloring_{}_{}.sol".format(G.name, targetcolor), "w"))
-    
-else: # should really test all possible values of solved
-    print ("UNFEASIBLE")    
+# Record end time
+end_time = time.perf_counter()
+
+# Calculate elapsed time
+solving_time = end_time - start_time
+
+
+with open("starcoloring_{}_{}.sol".format(G.name, targetcolor), 'w') as outfile:
+    # Print the solving time
+    print(f"Solving time: {solving_time:.4f} seconds")
+    print(f"Solving time: {solving_time:.4f} seconds", file=outfile)
+
+    if solved == OptimizationStatus.OPTIMAL:
+        print (G.name)
+        print (G.name, file=outfile)
+        for i in G.nodes:
+            for c in range (0, targetcolor):
+                if x[i][c].x > 0.99:
+                    color = c
+            print ("vertex {} has color {}".format(i, color))
+        print ("number of color: {}".format(maxcolor.x+1))
+        print ("number of color: {}".format(maxcolor.x+1), file=outfile)
+        print_stencil_color (sizex, sizey, G, x)
+        print_stencil_color (sizex, sizey, G, x, fileout=outfile)
+    else: # should really test all possible values of solved
+        print ("UNFEASIBLE")
+        print ("UNFEASIBLE", file=outfile)    
+
+
+
+
+
+
