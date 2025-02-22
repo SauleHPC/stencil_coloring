@@ -46,13 +46,13 @@ def build_starcoloring_problem(G, targetColor):
     for i in G.nodes:
         for j in G.neighbors(i):
             if j != i:
+                m += x[i][c] + x[j][c] <= 1 #distance 1 coloring must hold
                 for k in G.neighbors(j):
                     if k != i and k != j:
                         for l in G.neighbors(k):
                             if l != i and l != j and l != k:
                                 #print (i, j, k)
                                 for c in range (0,targetColor):
-                                    m += x[i][c] + x[j][c] + x[k][c] + x[l][c] <= 2 #only 2 in 4
                                     for c2 in range (c+1,targetColor):
                                         m += x[i][c] + x[j][c] + x[k][c] + x[l][c] +  x[i][c2] + x[j][c2] + x[k][c2] + x[l][c2] <= 3 #at most 3 out of 2 colors in 4
 
