@@ -92,8 +92,8 @@ def build_starcoloring_problem(G, targetColor):
 
 
     #try to normalize solution by having the first two vertices have particular colors
-    m += x[stencil_node_name(0,0)][0] = 1
-    m += x[stencil_node_name(1,0)][1] = 1
+    m += x[stencil_node_name(0,0)][0] == 1
+    m += x[stencil_node_name(1,0)][1] == 1
 
     #set objective function
     m.objective = minimize(maxcolor)
