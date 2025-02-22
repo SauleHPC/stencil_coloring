@@ -42,22 +42,29 @@ def build_starcoloring_problem(G, targetColor):
         for c in range (0, targetColor):
             m += maxcolor - c*x[i][c]  >= 0
 
-    #each chain of 3 has three colors
+    #each chain of 3 edges has at least three colors
     for i in G.nodes:
         for j in G.neighbors(i):
-            for k in G.neighbors(j):
-                if i != j and i != k:
-                    #print (i, j, k)
-                    for c in range (0,targetColor):
-                        m += x[i][c] + x[j][c] + x[k][c] <= 1 #only 1 in 3
+            if j != i:
+                for k in G.neighbors(j):
+                    if k != i and k != j:
+                        for l in G.neighbors(k):
+                            if l != i and l != j and l != k:
+                                #print (i, j, k)
+                                for c in range (0,targetColor):
+                                    m += x[i][c] + x[j][c] + x[k][c] + x[l][c] <= 2 #only 2 in 4
+                                    for c2 in range (c+1,targetColor):
+                                        m += x[i][c] + x[j][c] + x[k][c] + x[l][c] +  x[i][c2] + x[j][c2] + x[k][c2] + x[l][c2] <= 3 #at most 3 out of 2 colors in 4
+
+
                     
 
     #set objective function
     m.objective = minimize(maxcolor)
     return (m,x,maxcolor)
 
-sizex = 3
-sizey = 3
+sizex = 5
+sizey = 5
 targetcolor=5
 G = graph_build_stencil_2d_5pt(sizex,sizey)
 print(list(G.nodes))
@@ -68,6 +75,18 @@ m.write("starcoloring_{}_{}_{}.lp".format(sizex, sizey, targetcolor))
 print (x)
 
 
+def print_stencil_color(sizex, sizey, G, color_variables):
+    for i in range(0,sizex):
+        for j in range(0,sizey):
+            vertexname = stencil_node_name(i,j)
+            color=-1
+            for c in range (0, targetcolor):
+                if color_variables[vertexname][c].x > 0.99:
+                    color = c
+            print(color, end='')
+        print("")
+    
+
 solved = m.optimize()
 
 if solved == OptimizationStatus.OPTIMAL:
@@ -77,5 +96,7 @@ if solved == OptimizationStatus.OPTIMAL:
                 color = c
         print ("vertex {} has color {}".format(i, color))
     print ("number of color: {}".format(maxcolor.x+1))
+    print_stencil_color (sizex, sizey, G, x)
+    
 else: # should really test all possible values of solved
     print ("UNFEASIBLE")    
