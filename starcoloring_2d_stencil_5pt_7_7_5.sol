@@ -1,0 +1,10 @@
+Solving time: 2.3294 seconds
+2d_stencil_5pt_7_7
+number of color: 5.0
+0434243
+1241404
+4304342
+3142414
+2434043
+4041424
+3424341
