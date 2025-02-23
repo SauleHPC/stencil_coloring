@@ -1,0 +1,10 @@
+Solving time: 18.2221 seconds
+2d_stencil_9pt_box_7_7
+number of color: 9.0
+0380560
+1764181
+4523724
+0380560
+1764181
+4523724
+0380560

@@ -1,0 +1,10 @@
+Solving time: 21.6605 seconds
+2d_stencil_9pt_box_7_7
+number of color: 9.0
+0543546
+1210215
+8786878
+0543546
+1210215
+8786878
+0543546
