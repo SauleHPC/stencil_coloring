@@ -1,0 +1,10 @@
+Solving time: 190.1229 seconds
+2d_stencil_9pt_box_7_7
+number of color: 8.0
+0261764
+1340310
+0627425
+5715637
+3047015
+1623240
+3415163
