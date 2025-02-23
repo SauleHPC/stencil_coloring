@@ -137,7 +137,7 @@ print(list(G.edges))
 m,x,maxcolor = build_starcoloring_problem(G, targetcolor)
 
 xcyclic = -1
-if len(sys.argv>4):
+if len(sys.argv)>4:
     xcyclic=int(sys.argv[4])
 if xcyclic > 0:
     for i in range(0,sizex):
@@ -148,7 +148,7 @@ if xcyclic > 0:
 
 ycyclic = -1
 
-if len(sys.argv>5):
+if len(sys.argv)>5:
     ycyclic=int(sys.argv[5])
 if ycyclic > 0:
     for i in range(0,sizex):
@@ -157,7 +157,7 @@ if ycyclic > 0:
                 if j-ycyclic>=0:
                     m += x[stencil_node_name(i,j)][c] - x[stencil_node_name(i,j-ycyclic)][c] == 0
 
-m.write("starcoloring_{}_{}{}{}.lp".format(G.name, targetcolor, (xcyclic>0?"_xc{}".format(xcyclic):""), (ycyclic>0?"_yc{}".format(ycyclic):"")))
+m.write("starcoloring_{}_{}{}{}.lp".format(G.name, targetcolor, ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else "")))
 #print (x)
 
 
@@ -172,7 +172,7 @@ end_time = time.perf_counter()
 solving_time = end_time - start_time
 
 
-with open("starcoloring_{}_{}{}{}.sol".format(G.name, targetcolor, (xcyclic>0?"_xc{}".format(xcyclic):""), (ycyclic>0?"_yc{}".format(ycyclic):"")), 'w') as outfile:
+with open("starcoloring_{}_{}{}{}.sol".format(G.name, targetcolor,  ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else "")), 'w') as outfile:
     # Print the solving time
     print(f"Solving time: {solving_time:.4f} seconds")
     print(f"Solving time: {solving_time:.4f} seconds", file=outfile)
