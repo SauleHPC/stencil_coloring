@@ -1,6 +1,7 @@
 import networkx as nx
 from mip import LinExpr, Model, xsum, minimize, BINARY, INTEGER, OptimizationStatus
 import sys
+import time
 
 def stencil_node_name(i, j):
     return "{}_{}".format(i,j)
@@ -61,7 +62,7 @@ def build_starcoloring_problem(G, targetColor):
     for i in G.nodes:
         x[i] = {}
         for c in range(0,targetColor):
-            x[i][c] = m.add_var(var_type=BINARY, name="x_{}_{}".format(i,c))
+            x[i][c] = m.add_var(var_type=BINARY, name="color_{}_{}".format(i,c))
     # each vertex has a color
     for i in G.nodes:
         m += xsum([x[i][c] for c in x[i]]) == 1
@@ -77,7 +78,8 @@ def build_starcoloring_problem(G, targetColor):
     for i in G.nodes:
         for j in G.neighbors(i):
             if j != i:
-                m += x[i][c] + x[j][c] <= 1 #distance 1 coloring must hold
+                for c in range (0,targetColor):
+                    m += x[i][c] + x[j][c] <= 1 #distance 1 coloring must hold
                 for k in G.neighbors(j):
                     if k != i and k != j:
                         for l in G.neighbors(k):
@@ -88,7 +90,10 @@ def build_starcoloring_problem(G, targetColor):
                                         m += x[i][c] + x[j][c] + x[k][c] + x[l][c] +  x[i][c2] + x[j][c2] + x[k][c2] + x[l][c2] <= 3 #at most 3 out of 2 colors in 4
 
 
-                    
+
+    #try to normalize solution by having the first two vertices have particular colors
+    m += x[stencil_node_name(0,0)][0] == 1
+    m += x[stencil_node_name(1,0)][1] == 1
 
     #set objective function
     m.objective = minimize(maxcolor)
@@ -133,18 +138,41 @@ m,x,maxcolor = build_starcoloring_problem(G, targetcolor)
 m.write("starcoloring_{}_{}.lp".format(G.name, targetcolor))
 #print (x)
 
+
+start_time = time.perf_counter()
+
 solved = m.optimize()
 
-if solved == OptimizationStatus.OPTIMAL:
-    print (G.name)
-    for i in G.nodes:
-        for c in range (0, targetcolor):
-            if x[i][c].x > 0.99:
-                color = c
-        print ("vertex {} has color {}".format(i, color))
-    print ("number of color: {}".format(maxcolor.x+1))
-    print_stencil_color (sizex, sizey, G, x)
-    print_stencil_color (sizex, sizey, G, x, fileout=open("starcoloring_{}_{}.sol".format(G.name, targetcolor), "w"))
-    
-else: # should really test all possible values of solved
-    print ("UNFEASIBLE")    
+# Record end time
+end_time = time.perf_counter()
+
+# Calculate elapsed time
+solving_time = end_time - start_time
+
+
+with open("starcoloring_{}_{}.sol".format(G.name, targetcolor), 'w') as outfile:
+    # Print the solving time
+    print(f"Solving time: {solving_time:.4f} seconds")
+    print(f"Solving time: {solving_time:.4f} seconds", file=outfile)
+
+    if solved == OptimizationStatus.OPTIMAL:
+        print (G.name)
+        print (G.name, file=outfile)
+        for i in G.nodes:
+            for c in range (0, targetcolor):
+                if x[i][c].x > 0.99:
+                    color = c
+            print ("vertex {} has color {}".format(i, color))
+        print ("number of color: {}".format(maxcolor.x+1))
+        print ("number of color: {}".format(maxcolor.x+1), file=outfile)
+        print_stencil_color (sizex, sizey, G, x)
+        print_stencil_color (sizex, sizey, G, x, fileout=outfile)
+    else: # should really test all possible values of solved
+        print ("UNFEASIBLE")
+        print ("UNFEASIBLE", file=outfile)    
+
+
+
+
+
+
