@@ -107,6 +107,14 @@ m.write("starcoloring_{}_{}{}{}.lp".format(G.name, targetcolor, ("_xc{}".format(
 #print (x)
 
 
+def seed (G, sizex, sizey, filename, model):
+    sl.load_color_info(G, sizex, sizey, filename)
+    for v in G.nodes:
+        if "color" in G.nodes:
+            print ("yeah")
+
+
+            
 start_time = time.perf_counter()
 
 solved = m.optimize()
