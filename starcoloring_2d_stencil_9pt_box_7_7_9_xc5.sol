@@ -1,0 +1,10 @@
+Solving time: 179.9730 seconds
+2d_stencil_9pt_box_7_7
+number of color: 8.0
+0540645
+1237217
+6054064
+4761530
+3123721
+0540645
+1237217

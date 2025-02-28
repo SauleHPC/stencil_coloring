@@ -1,0 +1,10 @@
+Solving time: 78.9011 seconds
+2d_stencil_9pt_box_7_7
+number of color: 8.0
+0351603
+1402576
+3516035
+2673412
+0351603
+1402576
+3516035
