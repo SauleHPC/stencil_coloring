@@ -106,14 +106,18 @@ if ycyclic > 0:
 m.write("starcoloring_{}_{}{}{}.lp".format(G.name, targetcolor, ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else "")))
 #print (x)
 
-
-def seed (G, sizex, sizey, filename, model):
-    sl.load_color_info(G, sizex, sizey, filename)
+#use color attribute from graph to force color info
+def seed (G, sizex, sizey, filename, model, x):
+    st.load_color_info(G, sizex, sizey, filename)
+    print("color loaded")
     for v in G.nodes:
-        if "color" in G.nodes:
-            print ("yeah")
+        if "color" in G.nodes[v]:
+            model += x[v][G.nodes[v]["color"]] == 1
+            
 
+#seed (G, 6, 6, "starcoloring_2d_stencil_9pt_box_6_6_9.sol", m, x)
 
+#sys.exit( -1)
             
 start_time = time.perf_counter()
 

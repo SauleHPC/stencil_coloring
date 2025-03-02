@@ -79,4 +79,4 @@ def load_color_info(G, sizex, sizey, filename):
                 l = f.readline()
 
             for y in range(0,sizey):
-                nx.set_node_attributes(G, {st.stencil_node_name(x,y): {"color":int(l[y])}})
+                nx.set_node_attributes(G, {stencil_node_name(x,y): {"color":int(l[y])}})
