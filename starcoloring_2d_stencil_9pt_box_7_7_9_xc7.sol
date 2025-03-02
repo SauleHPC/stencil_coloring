@@ -1,0 +1,10 @@
+Solving time: 199.9138 seconds
+2d_stencil_9pt_box_7_7
+number of color: 8.0
+0323142
+1454035
+3063724
+2521601
+1437543
+5604267
+3276130

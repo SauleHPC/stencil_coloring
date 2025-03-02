@@ -1,0 +1,10 @@
+Solving time: 157.9739 seconds
+2d_stencil_9pt_box_7_7
+number of color: 9.0
+0270650
+1848141
+3653273
+4841814
+0270650
+1848141
+3653273
