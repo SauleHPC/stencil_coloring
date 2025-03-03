@@ -103,6 +103,13 @@ if ycyclic > 0:
                 if j-ycyclic>=0:
                     m += x[st.stencil_node_name(i,j)][c] - x[st.stencil_node_name(i,j-ycyclic)][c] == 0
 
+# adding basic lower bounds based on solutions we already know
+if sys.argv[3] == "9pt_star":
+    if sizex > 7 and sizey > 7:
+        m += maxcolor >= 8
+
+
+                    
 m.write("starcoloring_{}_{}{}{}.lp".format(G.name, targetcolor, ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else "")))
 #print (x)
 
