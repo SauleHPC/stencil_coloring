@@ -113,6 +113,8 @@ if sys.argv[3] == "9pt_star":
         m += maxcolor >= 10
     if sizex > 17 and sizey > 17:
         m += maxcolor >= 11
+    if sizex > 33 and sizey > 33:
+        m += maxcolor >= 12
 
 
                     
