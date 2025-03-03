@@ -1,4 +1,4 @@
-Solving time: 134.1504 seconds
+Solving time: 93.1923 seconds
 2d_stencil_9pt_star_6_6
 number of color: 7.0
 043645

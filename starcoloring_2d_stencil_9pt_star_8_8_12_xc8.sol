@@ -1,4 +1,4 @@
-Solving time: 167.6039 seconds
+Solving time: 167.3668 seconds
 2d_stencil_9pt_star_8_8
 number of color: 8.0
 05301723
