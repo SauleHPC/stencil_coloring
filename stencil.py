@@ -107,6 +107,8 @@ if ycyclic > 0:
 if sys.argv[3] == "9pt_star":
     if sizex > 7 and sizey > 7:
         m += maxcolor >= 8
+    if sizex > 10 and sizey > 10:
+        m += maxcolor >= 9
 
 
                     
