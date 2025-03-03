@@ -2,56 +2,11 @@ import networkx as nx
 from mip import LinExpr, Model, xsum, minimize, BINARY, INTEGER, OptimizationStatus
 import sys
 import time
+import stencillib as st
 
-def stencil_node_name(i, j):
-    return "{}_{}".format(i,j)
 
 def max_degree(G):
     return max(G.degree[i] for i in G.nodes)
-
-def graph_build_stencil_2d_5pt(stencilX, stencilY):
-    G = nx.Graph(name="2d_stencil_5pt_{}_{}".format(stencilX, stencilY))
-    for i in range (0,stencilX):
-        for j in range (0,stencilY):
-            G.add_node(stencil_node_name(i,j))
-    for i in range (0,stencilX):
-        for j in range (0,stencilY):
-            for diff in [(-1,0), (1,0), (0, -1), (0,1)]:
-                tox = i+diff[0]
-                toy = j+diff[1]
-                if tox>=0 and toy>=0 and tox <stencilX and toy<stencilY:
-                    G.add_edge(stencil_node_name(i,j),stencil_node_name(tox,toy))
-    return G
-
-
-def graph_build_stencil_2d_9pt_box(stencilX, stencilY):
-    G = nx.Graph(name="2d_stencil_9pt_box_{}_{}".format(stencilX, stencilY))
-    for i in range (0,stencilX):
-        for j in range (0,stencilY):
-            G.add_node(stencil_node_name(i,j))
-    for i in range (0,stencilX):
-        for j in range (0,stencilY):
-            for diff in [(-1,-1), (-1,0),(-1,1), (0, -1), (0,1), (1,-1), (1,0), (1,1)]:
-                tox = i+diff[0]
-                toy = j+diff[1]
-                if tox>=0 and toy>=0 and tox <stencilX and toy<stencilY:
-                    G.add_edge(stencil_node_name(i,j),stencil_node_name(tox,toy))
-    return G
-
-
-def graph_build_stencil_2d_9pt_star(stencilX, stencilY):
-    G = nx.Graph(name="2d_stencil_9pt_star_{}_{}".format(stencilX, stencilY))
-    for i in range (0,stencilX):
-        for j in range (0,stencilY):
-            G.add_node(stencil_node_name(i,j))
-    for i in range (0,stencilX):
-        for j in range (0,stencilY):
-            for diff in [(-2,0), (-1,0), (1,0), (2,0), (0, -1), (0,-2), (0,1), (0,2)]:
-                tox = i+diff[0]
-                toy = j+diff[1]
-                if tox>=0 and toy>=0 and tox <stencilX and toy<stencilY:
-                    G.add_edge(stencil_node_name(i,j),stencil_node_name(tox,toy))
-    return G
 
 
 
@@ -91,25 +46,11 @@ def build_starcoloring_problem(G, targetColor):
 
 
 
-    #try to normalize solution by having the first two vertices have particular colors
-    m += x[stencil_node_name(0,0)][0] == 1
-    m += x[stencil_node_name(1,0)][1] == 1
 
     #set objective function
     m.objective = minimize(maxcolor)
     return (m,x,maxcolor)
 
-
-def print_stencil_color(sizex, sizey, G, color_variables, fileout=sys.stdout):
-    for i in range(0,sizex):
-        for j in range(0,sizey):
-            vertexname = stencil_node_name(i,j)
-            color=-1
-            for c in range (0, targetcolor):
-                if color_variables[vertexname][c].x > 0.99:
-                    color = c
-            print(hex(color)[2:], end='', file=fileout)
-        print("", file=fileout)
 
 
 if len(sys.argv) < 4:
@@ -122,19 +63,24 @@ sizex = int(sys.argv[1])
 sizey = int(sys.argv[2])
 if sys.argv[3] == "5pt":
     targetcolor=5
-    G = graph_build_stencil_2d_5pt(sizex,sizey)
+    G = st.graph_build_stencil_2d_5pt(sizex,sizey)
 if sys.argv[3] == "9pt_box":
     targetcolor=9
-    G = graph_build_stencil_2d_9pt_box(sizex,sizey)
+    G = st.graph_build_stencil_2d_9pt_box(sizex,sizey)
 if sys.argv[3] == "9pt_star":
     targetcolor=12
-    G = graph_build_stencil_2d_9pt_star(sizex,sizey)
+    G = st.graph_build_stencil_2d_9pt_star(sizex,sizey)
 
 
 print(list(G.nodes))
 print(list(G.edges))
     
 m,x,maxcolor = build_starcoloring_problem(G, targetcolor)
+
+#try to normalize solution by having the first two vertices have particular colors
+m += x[st.stencil_node_name(0,0)][0] == 1
+m += x[st.stencil_node_name(1,0)][1] == 1
+
 
 xcyclic = -1
 if len(sys.argv)>4:
@@ -144,7 +90,7 @@ if xcyclic > 0:
         for j in range(0,sizey):
             for c in range(0, targetcolor):
                 if i-xcyclic>=0:
-                    m += x[stencil_node_name(i,j)][c] - x[stencil_node_name(i-xcyclic,j)][c] == 0
+                    m += x[st.stencil_node_name(i,j)][c] - x[st.stencil_node_name(i-xcyclic,j)][c] == 0
 
 ycyclic = -1
 
@@ -155,12 +101,24 @@ if ycyclic > 0:
         for j in range(0,sizey):
             for c in range(0, targetcolor):
                 if j-ycyclic>=0:
-                    m += x[stencil_node_name(i,j)][c] - x[stencil_node_name(i,j-ycyclic)][c] == 0
+                    m += x[st.stencil_node_name(i,j)][c] - x[st.stencil_node_name(i,j-ycyclic)][c] == 0
 
 m.write("starcoloring_{}_{}{}{}.lp".format(G.name, targetcolor, ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else "")))
 #print (x)
 
+#use color attribute from graph to force color info
+def seed (G, sizex, sizey, filename, model, x):
+    st.load_color_info(G, sizex, sizey, filename)
+    print("color loaded")
+    for v in G.nodes:
+        if "color" in G.nodes[v]:
+            model += x[v][G.nodes[v]["color"]] == 1
+            
 
+#seed (G, 6, 6, "starcoloring_2d_stencil_9pt_box_6_6_9.sol", m, x)
+
+#sys.exit( -1)
+            
 start_time = time.perf_counter()
 
 solved = m.optimize()
@@ -187,8 +145,8 @@ with open("starcoloring_{}_{}{}{}.sol".format(G.name, targetcolor,  ("_xc{}".for
             print ("vertex {} has color {}".format(i, color))
         print ("number of color: {}".format(maxcolor.x+1))
         print ("number of color: {}".format(maxcolor.x+1), file=outfile)
-        print_stencil_color (sizex, sizey, G, x)
-        print_stencil_color (sizex, sizey, G, x, fileout=outfile)
+        st.print_stencil_color (sizex, sizey, G, targetcolor, x)
+        st.print_stencil_color (sizex, sizey, G, targetcolor, x, fileout=outfile)
     else: # should really test all possible values of solved
         print ("UNFEASIBLE")
         print ("UNFEASIBLE", file=outfile)    
