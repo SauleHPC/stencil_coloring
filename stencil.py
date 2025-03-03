@@ -106,15 +106,7 @@ if ycyclic > 0:
 # adding basic lower bounds based on solutions we already know
 if sys.argv[3] == "9pt_star":
     if sizex > 7 and sizey > 7:
-        m += maxcolor >= 8
-    if sizex > 10 and sizey > 10:
-        m += maxcolor >= 9
-    if sizex > 13 and sizey > 13:
-        m += maxcolor >= 10
-    if sizex > 17 and sizey > 17:
-        m += maxcolor >= 11
-    if sizex > 33 and sizey > 33:
-        m += maxcolor >= 12
+        m += maxcolor >= 7 #7x7 needs 8 colors
 
 
                     
