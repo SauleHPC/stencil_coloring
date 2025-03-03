@@ -74,9 +74,10 @@ def load_color_info(G, sizex, sizey, filename):
     #load color information
     with open(filename, 'r') as f:
         for x in range(0,sizex):
-            l = "continue"
-            while l[0:2].isdigit() is False: #skip lines that aren't coloring
+            l = "continue:"
+            while l.count("_")>0 or l.count(":")>0: #skip lines that aren't coloring
                 l = f.readline()
 
             for y in range(0,sizey):
-                nx.set_node_attributes(G, {stencil_node_name(x,y): {"color":int(l[y])}})
+                color = int(l[y])
+                nx.set_node_attributes(G, {stencil_node_name(x,y): {"color":color}})
