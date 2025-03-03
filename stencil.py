@@ -10,6 +10,38 @@ def max_degree(G):
 
 
 
+def pre_normalize(G, targetColor, m, x, maxcolor):
+        #try to normalize solution by fixing a few vertices colors
+    if G.name.startswith("2d_stencil_5pt"): #in a 5pt_box, (0,0), (1,0) is an edge so they have to be numbered differently.
+        m += x[st.stencil_node_name(0,0)][0] == 1
+        m += x[st.stencil_node_name(1,0)][1] == 1
+    
+    if G.name.startswith("2d_stencil_9pt_box"): #in a 9pt_box, (0,0), (1,0), (0,1), (1,1) is a K4 so they have to be numbered differently.
+        m += x[st.stencil_node_name(0,0)][0] == 1
+        m += x[st.stencil_node_name(1,0)][1] == 1
+        m += x[st.stencil_node_name(0,1)][2] == 1
+        m += x[st.stencil_node_name(1,1)][3] == 1
+    
+    if G.name.startswith("2d_stencil_9pt_star"): #in a 9pt_star, (0,0), (1,0), (2,0) is a triangle so they have to be numbered differently.
+        m += x[st.stencil_node_name(0,0)][0] == 1
+        m += x[st.stencil_node_name(1,0)][1] == 1
+        m += x[st.stencil_node_name(2,0)][2] == 1
+        # cutting basic symmetries; basically, pre-normalizing by preventing early vertices to have too high a color number
+        for c in range(4, targetcolor):
+            m += x[st.stencil_node_name(0,1)][c] == 0
+        for c in range(5, targetcolor):
+            m += x[st.stencil_node_name(1,1)][c] == 0
+        for c in range(6, targetcolor):
+            m += x[st.stencil_node_name(2,1)][c] == 0
+        for c in range(7, targetcolor):
+            m += x[st.stencil_node_name(0,2)][c] == 0
+        for c in range(8, targetcolor):
+            m += x[st.stencil_node_name(1,2)][c] == 0
+        for c in range(9, targetcolor):
+            m += x[st.stencil_node_name(2,2)][c] == 0
+
+
+
 def build_starcoloring_problem(G, targetColor):
     m = Model("Coloring")
     x = {}
@@ -49,6 +81,8 @@ def build_starcoloring_problem(G, targetColor):
 
     #set objective function
     m.objective = minimize(maxcolor)
+    
+    pre_normalize(G, targetColor, m, x, maxcolor)
     return (m,x,maxcolor)
 
 
@@ -77,10 +111,11 @@ print(list(G.edges))
     
 m,x,maxcolor = build_starcoloring_problem(G, targetcolor)
 
-#try to normalize solution by having the first two vertices have particular colors
-m += x[st.stencil_node_name(0,0)][0] == 1
-m += x[st.stencil_node_name(1,0)][1] == 1
-
+# adding basic lower bounds based on solutions we already know
+if sys.argv[3] == "9pt_star":
+    if sizex > 7 and sizey > 7:
+        m += maxcolor >= 7 #7x7 needs 8 colors
+    
 
 xcyclic = -1
 if len(sys.argv)>4:
@@ -103,14 +138,11 @@ if ycyclic > 0:
                 if j-ycyclic>=0:
                     m += x[st.stencil_node_name(i,j)][c] - x[st.stencil_node_name(i,j-ycyclic)][c] == 0
 
-# adding basic lower bounds based on solutions we already know
-if sys.argv[3] == "9pt_star":
-    if sizex > 7 and sizey > 7:
-        m += maxcolor >= 7 #7x7 needs 8 colors
 
 
-                    
-m.write("starcoloring_{}_{}{}{}.lp".format(G.name, targetcolor, ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else "")))
+problemname="starcoloring_{}_{}{}{}".format(G.name, targetcolor, ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else ""))
+print(problemname)
+m.write("{}.lp".format(problemname))
 #print (x)
 
 #use color attribute from graph to force color info
@@ -137,7 +169,7 @@ end_time = time.perf_counter()
 solving_time = end_time - start_time
 
 
-with open("starcoloring_{}_{}{}{}.sol".format(G.name, targetcolor,  ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else "")), 'w') as outfile:
+with open("{}.sol".format(problemname), 'w') as outfile:
     # Print the solving time
     print(f"Solving time: {solving_time:.4f} seconds")
     print(f"Solving time: {solving_time:.4f} seconds", file=outfile)
