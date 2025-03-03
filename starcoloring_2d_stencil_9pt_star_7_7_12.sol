@@ -1,0 +1,10 @@
+Solving time: 921.3215 seconds
+2d_stencil_9pt_star_7_7
+number of color: 8.0
+0214230
+1350314
+2631751
+3402630
+5746502
+6310347
+0563214
