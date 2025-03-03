@@ -2,6 +2,11 @@
 
 \usepackage{fullpage}
 
+\usepackage{color}
+\usepackage{soul}
+\newcommand{\highlightsol}[1]{{\color{blue}#1}}
+
+
 \begin{document}
 
 \section{Problem definition}
@@ -60,7 +65,62 @@ stencil need 6 colors. The $5 \times 5$ stencil and $6 \times 6$
 stencil need 7 colors. The $7 \times 7$ stencil, $8 \times 8$ stencil,
 and $9 \times 9$ stencil need 8 colors.
 
+\section{On tooling}
+
+To look at these coloring problems, it is helpful to have good
+tooling. A common problem is that if you admit a coloring $C$, then
+any permutation of that coloring $C$ also works. The transpose of the
+coloring also works $C'(i,j) = C(j,i)$ on square stencils. And the
+horizontal and vertical mirroring also work.
+
+A useful idea is to normalize the coloring using some kind of rule to
+make the coloring look more similar to leveraging that. A simple idea
+is to permute the coloring to have 0 at $(0,0)$, then use colors the
+smallest colors for the first box of $2\time 2$, then the smallest
+colors for the first box of $3 \times 3$, etc.
+
+This does not solve all issues, but makes the solutions much easier to
+look at.
+
 \section{All 9pt-box stencils are 8 colorable}
 
+There are ``cyclic'' solution to star coloring 9pt-box
+stencils. Forcing a cyclic solution of 1D-period $4$ seem to always
+lead to a 8 coloring (that is to say $C(i,j) = C(i-4,j)$.) They have
+been found up to stencils of size $48 \times 48$.
+
+And there is a valid 2D-cyclic coloring of period $(4,30)$ with 8
+colors. Here is a solution.
+
+~\\
+\highlightsol{014260142601426014260142601426}014260142601426014\\
+\highlightsol{230547631527034567132507436517}230547631527034567\\
+\highlightsol{142601426014260142601426014260}142601426014260142\\
+\highlightsol{567132507436517230547631527034}567132507436517230\\
+014260142601426014260142601426014260142601426014\\
+230547631527034567132507436517230547631527034567\\
+142601426014260142601426014260142601426014260142\\
+567132507436517230547631527034567132507436517230\\
+014260142601426014260142601426014260142601426014\\
+230547631527034567132507436517230547631527034567\\
+
+Some notes on that solution. Note that the first row is a 5 color pattern that repeats:\\
+\highlightsol{01426}0142601426014260142601426014260142601426014\\
+
+Note that the third row is the same as the first row but phase shifted by 1:\\
+1426\highlightsol{01426}014260142601426014260142601426014260142\\
+
+The second and fourth row are also phase shifted by a much larger amount:\\
+014260142601426014260142601426\\
+\highlightsol{230547631527034}567132507436517\\
+142601426014260142601426014260\\
+567132507436517\highlightsol{230547631527034}\\
+
+Some questions:
+\begin{itemize}
+\item Is this the smallest period? Do we care about finding a smaller period?
+\item Does this pattern extend 3D box stencil? Do we care about that?
+\item Can this help us find pattern for 9pt-star stencils?
+\end{itemize}
 
 \end{document}

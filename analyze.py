@@ -30,7 +30,7 @@ if sys.argv[3] == "9pt_star":
 
 
 
-sl.load_color_info(G, sizex, sizey, sys.argv[4])
+st.load_color_info(G, sizex, sizey, sys.argv[4])
                 
 
 for x in range(0,sizex):
