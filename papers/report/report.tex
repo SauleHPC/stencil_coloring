@@ -1,0 +1,66 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+
+\begin{document}
+
+\section{Problem definition}
+
+Graphs. $G=(V,E)$
+
+We are looking at stencil graphs. 2D stencil graphs with different
+neighborhood.  The vertices are numbered with a coordinate $(i,j)$. So
+a $N \times M$ stencil has vertices for $(0,0), (0,1), \dots (0, N-1),
+(1,0), (1,1), \dots (M-1, N-1)$.  We are considering three different
+neighborhood.
+
+\paragraph{5-point stencil} where vertex $(i,j)$ is connected to $(i-1,j)$,
+$(i+1,j)$, $(i,j-1)$, $(i,j+1)$
+
+\paragraph{9-point box stencil} where vertex $(i,j)$ is connected to
+$(i-1,j-1)$, $(i-1,j)$, $(i-1,j+1)$,
+$(i,j-1)$, $(i,j+1)$,
+$(i+1,j-1)$, $(i+1,j)$, $(i+1,j+1)$.
+
+\paragraph{9-point star stencil} where vertex $(i,j)$ is connected to
+$(i-2,j)$, $(i-1,j)$, $(i,j-1)$, $(i,j-2)$, $(i,j+1)$, $(i,j+2)$,
+$(i+1,j)$, $(i+2,j)$.
+
+All of these neighborhoods are assuming the neighbors exist (are
+within the $N \times M$ stencil).
+
+
+The problem we are looking at is \textbf{star coloring}. A star coloring of a
+graph is a function on the vertices $C: V \rightarrow N$ such that,
+$\forall (u,v) \in E, C(u) \neq C(v)$ and such that every chain of 4
+distinct vertices in the graph has at least 3 colors.
+
+An equivalent (?) definition of a star coloring is that the graph
+induced by the ertices of any two colors is a forest of star graphs.
+
+We want to find the star coloring that uses the fewer number of colors.
+
+\section{ILP}
+
+Wrote the ILP to solve the problem optimally. Here is what we know
+from the ILP.
+
+On 5-pt stencil. The optimal star coloring of a $3 \times 3$ stencil
+has 4 colors, while $4 \times 4$ needs 5 colors. YOu can easily find a
+5 color solution for 5-pt stencil. For instance, you can color a 5pt stencil
+centered on a vertex with 5 different colors and then tile the plane
+with that pattern to make a valid 5 color star coloring.
+
+On 9-pt box stencil. The $3 \times 3$ stencil needs 5 colors, the $4
+\times 4$ stencil needs 7 colors, and from sizes of $5 \times 5$,
+there are 8-color solutions up to stencils of $48 \times 48$.
+
+On 9-pt star stencil. The $3 \times 3$ stencil and $4 \times 4$
+stencil need 6 colors. The $5 \times 5$ stencil and $6 \times 6$
+stencil need 7 colors. The $7 \times 7$ stencil, $8 \times 8$ stencil,
+and $9 \times 9$ stencil need 8 colors.
+
+\section{All 9pt-box stencils are 8 colorable}
+
+
+\end{document}
