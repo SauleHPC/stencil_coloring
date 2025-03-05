@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --partition=Orion
-#SBATCH --job-name=2dstencil_ilpcoloring
+#SBATCH --job-name=2dstencil_ilpcoloring_cyclic
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=96
 #SBATCH --mem=550GB
@@ -27,5 +27,5 @@ if [ "$TYPE" = "" ]; then
 fi
 
 
-python3 stencil.py $SIZEX $SIZEY $TYPE
+python3 stencil.py $SIZEX $SIZEY $TYPE $XCYCLIC $YCYCLIC
 
