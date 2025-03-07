@@ -105,9 +105,18 @@ if sys.argv[3] == "9pt_star":
     targetcolor=12
     G = st.graph_build_stencil_2d_9pt_star(sizex,sizey)
 
+xcyclic = -1
+if len(sys.argv)>4:
+    xcyclic=int(sys.argv[4])
 
-print(list(G.nodes))
-print(list(G.edges))
+ycyclic = -1
+if len(sys.argv)>5:
+    ycyclic=int(sys.argv[5])
+    
+#print(list(G.nodes))
+#print(list(G.edges))
+problemname="starcoloring_{}_{}{}{}".format(G.name, targetcolor, ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else ""))
+print(problemname)
     
 m,x,maxcolor = build_starcoloring_problem(G, targetcolor)
 
@@ -117,9 +126,7 @@ if sys.argv[3] == "9pt_star":
         m += maxcolor >= 7 #7x7 needs 8 colors
     
 
-xcyclic = -1
-if len(sys.argv)>4:
-    xcyclic=int(sys.argv[4])
+#adding cyclic constraints
 if xcyclic > 0:
     for i in range(0,sizex):
         for j in range(0,sizey):
@@ -127,10 +134,6 @@ if xcyclic > 0:
                 if i-xcyclic>=0:
                     m += x[st.stencil_node_name(i,j)][c] - x[st.stencil_node_name(i-xcyclic,j)][c] == 0
 
-ycyclic = -1
-
-if len(sys.argv)>5:
-    ycyclic=int(sys.argv[5])
 if ycyclic > 0:
     for i in range(0,sizex):
         for j in range(0,sizey):
@@ -140,8 +143,6 @@ if ycyclic > 0:
 
 
 
-problemname="starcoloring_{}_{}{}{}".format(G.name, targetcolor, ("_xc{}".format(xcyclic) if xcyclic>0 else ""), ("_yc{}".format(ycyclic) if ycyclic>0 else ""))
-print(problemname)
 m.write("{}.lp".format(problemname))
 #print (x)
 
