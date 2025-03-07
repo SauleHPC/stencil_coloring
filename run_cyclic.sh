@@ -27,5 +27,5 @@ if [ "$TYPE" = "" ]; then
 fi
 
 
-python3 stencil.py $SIZEX $SIZEY $TYPE $XCYCLIC $YCYCLIC
+python3 -u stencil.py $SIZEX $SIZEY $TYPE $XCYCLIC $YCYCLIC
 
