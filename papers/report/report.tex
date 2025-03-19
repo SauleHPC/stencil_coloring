@@ -62,7 +62,8 @@ there are 8-color solutions up to stencils of $48 \times 48$.
 
 On 9-pt star stencil. The $3 \times 3$ stencil and $4 \times 4$
 stencil need 6 colors. The $5 \times 5$ stencil and $6 \times 6$
-stencil need 7 colors. 
+stencil need 7 colors. From $7 \times 7$, stencils need 8 colors.
+
 \section{On tooling}
 
 To look at these coloring problems, it is helpful to have good
@@ -118,13 +119,50 @@ Some questions:
 \begin{itemize}
 \item Is this the smallest period? Do we care about finding a smaller period?
 \item Does this pattern extend 3D box stencil? Do we care about that?
-\item Can this help us find pattern for 9pt-star stencils?
 \end{itemize}
 
 
-\section{On 9pt-star star coloring}
+\section{All 9pt-star are 8-star-colorable}
 
-For 9pt star, still don't have a clean solution.
+There is an 8x8 cyclic solution for 9pt-star coloring.
+
+~\\
+014302730143027301430273014302\\
+230713042307130423071304230713\\
+156425671564256715642567156425\\
+627561456275614562756145627561\\
+314032703140327031403270314032\\
+203710342037103420371034203710\\
+165426571654265716542657165426\\
+527651465276514652765146527651\\
+01430273\highlightsol{01430273}01430273014302\\
+23071304\highlightsol{23071304}23071304230713\\
+15642567\highlightsol{15642567}15642567156425\\
+62756145\highlightsol{62756145}62756145627561\\
+31403270\highlightsol{31403270}31403270314032\\
+20371034\highlightsol{20371034}20371034203710\\
+16542657\highlightsol{16542657}16542657165426\\
+52765146\highlightsol{52765146}52765146527651\\
+014302730143027301430273014302\\
+230713042307130423071304230713\\
+156425671564256715642567156425\\
+627561456275614562756145627561\\
+314032703140327031403270314032\\
+203710342037103420371034203710\\
+165426571654265716542657165426\\
+527651465276514652765146527651\\
+
+Note that the 1st column and the 5th columns are quite similar:
+
+columns 1 is 02163215 and column 5: 01263125
+
+column 4 is 37450746; is quite similar to columns 8 which is 34750476
+
+column 2 is 13521062 and column 6 is 23512061
+
+column 3 is 40674357 and column 7 is 70647354
+
+it seems like the values are the same with some basic swaps
 
 
 \end{document}
